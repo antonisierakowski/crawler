@@ -1,0 +1,4 @@
+/.env
+/analyzed.json
+/node_modules/
+/.idea/
