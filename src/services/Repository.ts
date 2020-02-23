@@ -2,6 +2,7 @@ import { AnalysedWebsite } from "../models/AnalysedWebsite";
 import { injectable } from "inversify";
 import * as fs from "fs";
 import uuid from 'uuid';
+import { writeFileSyncRecursive } from "../helpers/writeFileRecursive";
 
 interface StoredWebsiteModel {
   title: string;
@@ -20,16 +21,22 @@ export interface WebsiteRepository {
 
 @injectable()
 export class LocalJSONStorage implements WebsiteRepository {
-  private path = 'src/analyzed.json';
+  private path = `./_records/${process.env.RESULT_FILE_NAME}`;
   private async getStorageFile(): Promise<StoredWebsiteModel[]> {
-    return JSON.parse(
-      fs.readFileSync(this.path, "utf8")
-    );
+    let storageFile: StoredWebsiteModel[];
+    try {
+      storageFile = JSON.parse(
+        fs.readFileSync(this.path, "utf8")
+      );
+    } catch(e) {
+      storageFile = [];
+    }
+    return storageFile;
   }
 
   async save(newWebsite: AnalysedWebsite): Promise<string> {
     const file = await this.getStorageFile();
-    const id = uuid.v4()
+    const id = uuid.v4();
     const newFile = [
       ...file,
       {
@@ -40,7 +47,7 @@ export class LocalJSONStorage implements WebsiteRepository {
       },
     ];
     console.log(`Saving website... ${newWebsite.url}`);
-    await fs.writeFileSync(this.path, JSON.stringify(newFile));
+    await writeFileSyncRecursive(this.path, JSON.stringify(newFile), 'utf-8');
     console.log('Website saved!');
     return id;
   }
@@ -64,7 +71,7 @@ export class LocalJSONStorage implements WebsiteRepository {
   async removeRecord(id: string): Promise<void> {
     const file = await this.getStorageFile();
     const fileAfterRemoval = file.filter(website => website.id !== id);
-    await fs.writeFileSync(this.path, JSON.stringify(fileAfterRemoval));
+    await writeFileSyncRecursive(this.path, JSON.stringify(fileAfterRemoval),'utf-8');
   }
 
   async getAndRemoveLastSavedUrl(): Promise<string> {

@@ -28,6 +28,7 @@ export class Crawler implements WebCrawler {
         try {
           await this.crawlWebsite(currentUrl);
         } catch(e) {
+          console.log(e)
           this.removeFromQueue(currentUrl);
         }
       }
