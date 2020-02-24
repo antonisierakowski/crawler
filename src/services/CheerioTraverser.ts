@@ -1,25 +1,29 @@
 import cheerio from 'cheerio';
 import { AnalysedWebsite } from "../models/AnalysedWebsite";
 import {MarkupTraverser} from "../interfaces/MarkupTraverser";
+import {inject, injectable} from "inversify";
+import {TYPES} from "../dependenciesContainer/types";
+import {MarkupFetcher} from "../interfaces/MarkupFetcher";
 
+@injectable()
 export class CheerioTraverser implements MarkupTraverser {
-  private readonly wrapper: CheerioStatic = null;
+  constructor(
+      @inject(TYPES.MarkupFetcher) private fetcher: MarkupFetcher,
+  ) { }
 
-  constructor(private url: string, body: string) {
-    this.wrapper = cheerio.load(body);
-  }
-
-  analyseWebsite(): AnalysedWebsite {
+  async analyseWebsite(url: string): Promise<AnalysedWebsite> {
+    const body = await this.fetcher.getMarkup(url);
+    const wrapper: CheerioStatic = cheerio.load(body);
     return {
-      url: this.url,
-      title: this.getSiteTitle(),
-      anchors: this.getAllAnchors(),
-      description: this.getSiteDescription(),
+      url: url,
+      title: this.getSiteTitle(wrapper),
+      anchors: this.getAllAnchors(wrapper),
+      description: this.getSiteDescription(wrapper),
     };
   }
 
-  private getAllAnchors(): string[] {
-    const allAnchorTags = this.wrapper('a');
+  private getAllAnchors(wrapper: CheerioStatic): string[] {
+    const allAnchorTags = wrapper('a');
     const allUrls = allAnchorTags.toArray().map((a) => (
       a.attribs.href
     ));
@@ -31,11 +35,11 @@ export class CheerioTraverser implements MarkupTraverser {
     }
   }
 
-  private getSiteTitle(): string {
-    return this.wrapper("title").text();
+  private getSiteTitle(wrapper: CheerioStatic): string {
+    return wrapper("title").text();
   }
 
-  private getSiteDescription(): string {
-    return this.wrapper('meta[name="description"]').attr('content');
+  private getSiteDescription(wrapper: CheerioStatic): string {
+    return wrapper('meta[name="description"]').attr('content');
   }
 }

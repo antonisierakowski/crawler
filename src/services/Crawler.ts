@@ -3,6 +3,7 @@ import { inject, injectable, unmanaged } from "inversify";
 import { TYPES } from "../dependenciesContainer/types";
 import { WebsiteRepository } from "../interfaces/WebsiteRepository";
 import { MarkupFetcher } from "../interfaces/MarkupFetcher";
+import {MarkupTraverser} from "../interfaces/MarkupTraverser";
 
 export interface WebCrawler {
   initialize(url: string): void;
@@ -13,8 +14,8 @@ export class Crawler implements WebCrawler {
   private queue: Set<string> = new Set();
 
   constructor(
-    @inject(TYPES.MarkupFetcher) private fetcher: MarkupFetcher,
     @inject(TYPES.WebsiteRepository) private repository: WebsiteRepository,
+    @inject(TYPES.MarkupTraverser) private traverser: MarkupTraverser,
   ) { }
 
   public async initialize(initialUrl: string): Promise<void> {
@@ -42,9 +43,7 @@ export class Crawler implements WebCrawler {
   }
 
   private async crawlWebsite(url: string): Promise<void> {
-    const markup = await this.fetcher.getMarkup(url);
-    const traverser = new CheerioTraverser(url, markup);
-    const crawlResult = traverser.analyseWebsite();
+    const crawlResult = await this.traverser.analyseWebsite(url);
     await this.repository.save(crawlResult);
     crawlResult.anchors.forEach(anchor => this.queue.add(anchor));
   }
