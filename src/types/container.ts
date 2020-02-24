@@ -1,9 +1,11 @@
 import "reflect-metadata";
 import { Container } from "inversify";
-import { AxiosMarkupFetcher, MarkupFetcher } from "../services/MarkupFetcher";
 import { TYPES } from "./types";
-import { LocalJSONStorage, WebsiteRepository } from "../services/Repository";
+import { LocalJSONStorage } from "../services/LocalJSONStorage";
 import { Crawler, WebCrawler } from "../services/Crawler";
+import { AxiosMarkupFetcher } from "../services/AxiosMarkupFetcher";
+import { WebsiteRepository } from "../interfaces/WebsiteRepository";
+import { MarkupFetcher } from "../interfaces/MarkupFetcher";
 
 const container = new Container();
 

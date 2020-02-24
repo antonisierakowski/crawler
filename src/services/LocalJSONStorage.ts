@@ -3,35 +3,20 @@ import { injectable } from "inversify";
 import * as fs from "fs";
 import uuid from 'uuid';
 import { writeFileSyncRecursive } from "../helpers/writeFileRecursive";
-
-interface StoredWebsiteModel {
-  title: string;
-  url: string;
-  id: string;
-  description: string;
-}
-
-export interface WebsiteRepository {
-  save(website: AnalysedWebsite): Promise<string>;
-  getById(id: string): Promise<StoredWebsiteModel>;
-  isUrlStored(url: string): Promise<boolean>;
-  getAndRemoveLastSavedUrl(): Promise<string>;
-  removeRecord(id: string): Promise<void>;
-}
+import { StoredWebsiteModel, WebsiteRepository } from "../interfaces/WebsiteRepository";
 
 @injectable()
 export class LocalJSONStorage implements WebsiteRepository {
   private path = `./_records/${process.env.RESULT_FILE_NAME}`;
   private async getStorageFile(): Promise<StoredWebsiteModel[]> {
-    let storageFile: StoredWebsiteModel[];
     try {
-      storageFile = JSON.parse(
+      const storageFile = JSON.parse(
         fs.readFileSync(this.path, "utf8")
       );
+      return storageFile;
     } catch(e) {
-      storageFile = [];
+      return [];
     }
-    return storageFile;
   }
 
   async save(newWebsite: AnalysedWebsite): Promise<string> {

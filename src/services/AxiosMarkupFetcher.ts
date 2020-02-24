@@ -1,9 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { injectable } from "inversify";
-
-export interface MarkupFetcher {
-  getMarkup(url: string): Promise<string>;
-}
+import { MarkupFetcher } from "../interfaces/MarkupFetcher";
 
 @injectable()
 export class AxiosMarkupFetcher implements MarkupFetcher {

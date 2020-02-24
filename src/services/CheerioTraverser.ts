@@ -1,9 +1,6 @@
 import cheerio from 'cheerio';
 import { AnalysedWebsite } from "../models/AnalysedWebsite";
-
-export interface MarkupTraverser {
-  analyseWebsite(): AnalysedWebsite;
-}
+import {MarkupTraverser} from "../interfaces/MarkupTraverser";
 
 export class CheerioTraverser implements MarkupTraverser {
   private wrapper: CheerioStatic = null;
@@ -17,13 +14,12 @@ export class CheerioTraverser implements MarkupTraverser {
     const allUrls = allAnchorTags.toArray().map((a) => (
       a.attribs.href
     ));
-    let result: string[];
     try {
-      result = allUrls.filter(url => url.includes('http'));
+      const result = allUrls.filter(url => url.includes('http'));
+      return result
     } catch (e) {
-      result = [];
+      return [];
     }
-    return result;
   }
 
   private getSiteTitle(): string {
