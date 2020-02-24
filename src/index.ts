@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import { WebCrawler } from "./services/Crawler";
-import container from "./types/container";
-import { TYPES } from "./types/types";
+import container from "./dependenciesContainer/container";
+import { TYPES } from "./dependenciesContainer/types";
 
 dotenv.config();
 

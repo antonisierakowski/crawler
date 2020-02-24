@@ -1,6 +1,6 @@
 import { CheerioTraverser } from "./CheerioTraverser";
 import { inject, injectable, unmanaged } from "inversify";
-import { TYPES } from "../types/types";
+import { TYPES } from "../dependenciesContainer/types";
 import { WebsiteRepository } from "../interfaces/WebsiteRepository";
 import { MarkupFetcher } from "../interfaces/MarkupFetcher";
 

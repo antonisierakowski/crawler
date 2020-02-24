@@ -3,10 +3,19 @@ import { AnalysedWebsite } from "../models/AnalysedWebsite";
 import {MarkupTraverser} from "../interfaces/MarkupTraverser";
 
 export class CheerioTraverser implements MarkupTraverser {
-  private wrapper: CheerioStatic = null;
+  private readonly wrapper: CheerioStatic = null;
 
   constructor(private url: string, body: string) {
     this.wrapper = cheerio.load(body);
+  }
+
+  analyseWebsite(): AnalysedWebsite {
+    return {
+      url: this.url,
+      title: this.getSiteTitle(),
+      anchors: this.getAllAnchors(),
+      description: this.getSiteDescription(),
+    };
   }
 
   private getAllAnchors(): string[] {
@@ -28,14 +37,5 @@ export class CheerioTraverser implements MarkupTraverser {
 
   private getSiteDescription(): string {
     return this.wrapper('meta[name="description"]').attr('content');
-  }
-
-  analyseWebsite(): AnalysedWebsite {
-    return {
-      url: this.url,
-      title: this.getSiteTitle(),
-      anchors: this.getAllAnchors(),
-      description: this.getSiteDescription(),
-    };
   }
 }
