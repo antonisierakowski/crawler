@@ -8,12 +8,12 @@ import { StoredWebsiteModel, WebsiteRepository } from "../interfaces/WebsiteRepo
 @injectable()
 export class LocalJSONStorage implements WebsiteRepository {
   private path = `./_records/${process.env.RESULT_FILE_NAME}`;
+
   private async getStorageFile(): Promise<StoredWebsiteModel[]> {
     try {
-      const storageFile = JSON.parse(
+      return JSON.parse(
         fs.readFileSync(this.path, "utf8")
       );
-      return storageFile;
     } catch(e) {
       return [];
     }

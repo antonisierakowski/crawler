@@ -28,8 +28,7 @@ export class CheerioTraverser implements MarkupTraverser {
       a.attribs.href
     ));
     try {
-      const result = allUrls.filter(url => url.includes('http'));
-      return result
+      return allUrls.filter(url => url.includes('http'));
     } catch (e) {
       return [];
     }

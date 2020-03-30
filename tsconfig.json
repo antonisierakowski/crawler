@@ -6,6 +6,8 @@
     "noImplicitAny": true,
     "strictNullChecks": false,
     "esModuleInterop": true,
-    "target": "es6"
+    "target": "es6",
+    "outDir": "dist",
+    "sourceMap": true
   }
 }
