@@ -1,9 +1,9 @@
 import cheerio from 'cheerio';
 import { AnalysedWebsite } from "../models/AnalysedWebsite";
-import {MarkupTraverser} from "../interfaces/MarkupTraverser";
-import {inject, injectable} from "inversify";
-import {TYPES} from "../dependenciesContainer/types";
-import {MarkupFetcher} from "../interfaces/MarkupFetcher";
+import { MarkupTraverser } from "../interfaces/MarkupTraverser";
+import { inject, injectable } from "inversify";
+import { TYPES } from "../dependenciesContainer/types";
+import { MarkupFetcher } from "../interfaces/MarkupFetcher";
 
 @injectable()
 export class CheerioTraverser implements MarkupTraverser {

@@ -1,9 +1,7 @@
-import { CheerioTraverser } from "./CheerioTraverser";
-import { inject, injectable, unmanaged } from "inversify";
+import { inject, injectable } from "inversify";
 import { TYPES } from "../dependenciesContainer/types";
 import { WebsiteRepository } from "../interfaces/WebsiteRepository";
-import { MarkupFetcher } from "../interfaces/MarkupFetcher";
-import {MarkupTraverser} from "../interfaces/MarkupTraverser";
+import { MarkupTraverser } from "../interfaces/MarkupTraverser";
 
 export interface WebCrawler {
   initialize(url: string): void;

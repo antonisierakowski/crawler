@@ -6,8 +6,8 @@ import { Crawler, WebCrawler } from "../services/Crawler";
 import { AxiosMarkupFetcher } from "../services/AxiosMarkupFetcher";
 import { WebsiteRepository } from "../interfaces/WebsiteRepository";
 import { MarkupFetcher } from "../interfaces/MarkupFetcher";
-import {MarkupTraverser} from "../interfaces/MarkupTraverser";
-import {CheerioTraverser} from "../services/CheerioTraverser";
+import { MarkupTraverser } from "../interfaces/MarkupTraverser";
+import { CheerioTraverser } from "../services/CheerioTraverser";
 
 const container = new Container();
 
