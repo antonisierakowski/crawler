@@ -1,5 +1,5 @@
-import { PostgresRepository } from "services/PostgresRepository";
-import { LocalJSONStorage } from "services/LocalJSONStorage";
+import { PostgresRepository } from "repositories/PostgresRepository";
+import { LocalJSONStorage } from "repositories/LocalJSONStorage";
 
 export function getStorageService() {
   const shouldUseDb = Boolean(process.env.USE_DATABASE);

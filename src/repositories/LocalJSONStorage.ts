@@ -1,9 +1,9 @@
-import { AnalysedWebsite } from "../models/AnalysedWebsite";
+import { AnalysedWebsite } from "models/AnalysedWebsite";
 import { injectable } from "inversify";
 import * as fs from "fs";
 import uuid from 'uuid';
-import { writeFileSyncRecursive } from "../helpers/writeFileRecursive";
-import { StoredWebsiteModel, WebsiteRepository } from "../interfaces/WebsiteRepository";
+import { writeFileSyncRecursive } from "helpers/writeFileRecursive";
+import { StoredWebsiteModel, WebsiteRepository } from "interfaces/WebsiteRepository";
 
 @injectable()
 export class LocalJSONStorage implements WebsiteRepository {
