@@ -1,13 +1,13 @@
-import "reflect-metadata";
-import { Container } from "inversify";
-import { TYPES } from "./types";
-import { Crawler, WebCrawler } from "../services/Crawler";
-import { AxiosMarkupFetcher } from "../services/AxiosMarkupFetcher";
-import { WebsiteRepository } from "../interfaces/WebsiteRepository";
-import { MarkupFetcher } from "../interfaces/MarkupFetcher";
-import { MarkupTraverser } from "../interfaces/MarkupTraverser";
-import { CheerioTraverser } from "../services/CheerioTraverser";
-import { getStorageService } from "helpers/getStorageService";
+import 'reflect-metadata';
+import { Container } from 'inversify';
+import { TYPES } from './types';
+import { Crawler, WebCrawler } from '../services/Crawler';
+import { AxiosMarkupFetcher } from '../services/AxiosMarkupFetcher';
+import { WebsiteRepository } from '../interfaces/WebsiteRepository';
+import { MarkupFetcher } from '../interfaces/MarkupFetcher';
+import { MarkupTraverser } from '../interfaces/MarkupTraverser';
+import { CheerioTraverser } from '../services/CheerioTraverser';
+import { getStorageService } from '../helpers/getStorageService';
 
 const container = new Container();
 
