@@ -1,9 +1,10 @@
-Simple web crawler.  
+#### Simple web crawler.  
 To start crawling run the following commands in the project root:  
 `cp .env.dist .env`  
 `yarn`  
 `yarn prod`  
-If the crawler gets stuck, try changing initial url key in `.env` file and rerun.  
+If the crawler gets stuck, try changing initial url key in `.env` file and rerun.
+#
 In order to save your results in a database, you will need to create a PostgreSQL database and initialize a table:
 ```$xslt
 CREATE TABLE websites.websites (
