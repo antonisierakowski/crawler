@@ -58,4 +58,9 @@ export class LocalJSONStorage implements WebsiteRepository {
 		const fileAfterRemoval = file.filter(website => website.id !== id);
 		await writeFileSyncRecursive(this.path, JSON.stringify(fileAfterRemoval),'utf-8');
 	}
+
+	async removeStorageFile(): Promise<void> {
+		await fs.unlinkSync(this.path);
+		console.log('Storage file removed succesfuly.');
+	}
 }

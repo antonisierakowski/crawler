@@ -2,6 +2,8 @@ import { inject, injectable } from 'inversify';
 import { TYPES } from '../dependenciesContainer/types';
 import { WebsiteRepository } from '../interfaces/WebsiteRepository';
 import { MarkupTraverser } from '../interfaces/MarkupTraverser';
+import { DBClient } from '../interfaces/DBClient';
+import { ExitHandlerInterface } from '../interfaces/ExitHandlerInterface';
 
 export interface WebCrawler {
 	initialize(url: string): void;
@@ -14,7 +16,12 @@ export class Crawler implements WebCrawler {
 	constructor(
 		@inject(TYPES.WebsiteRepository) private repository: WebsiteRepository,
 		@inject(TYPES.MarkupTraverser) private traverser: MarkupTraverser,
-	) { }
+		@inject(TYPES.ExitHandlerInterface) private exitHandler: ExitHandlerInterface,
+	) {
+		process.on('exit', () => {
+			this.exitHandler.handleExit();
+		});
+	}
 
 	public async initialize(initialUrl: string): Promise<void> {
 		this.queue.add(initialUrl);

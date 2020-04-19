@@ -3,4 +3,6 @@ export const TYPES = {
 	WebsiteRepository: Symbol('WebsiteRepository'),
 	WebCrawler: Symbol('WebCrawler'),
 	MarkupTraverser: Symbol('MarkupTraverser'),
+	DBClient: Symbol('DBClient'),
+	ExitHandlerInterface: Symbol('ExitHandlerInterface'),
 };

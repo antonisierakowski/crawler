@@ -13,4 +13,5 @@ export interface WebsiteRepository {
     getById(id: string): Promise<StoredWebsiteModel>;
     isUrlStored(url: string): Promise<boolean>;
     removeRecord(id: string): Promise<void>;
+    removeStorageFile(): Promise<void>
 }
