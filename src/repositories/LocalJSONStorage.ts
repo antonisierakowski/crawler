@@ -58,11 +58,4 @@ export class LocalJSONStorage implements WebsiteRepository {
 		const fileAfterRemoval = file.filter(website => website.id !== id);
 		await writeFileSyncRecursive(this.path, JSON.stringify(fileAfterRemoval),'utf-8');
 	}
-
-	async getAndRemoveLastSavedUrl(): Promise<string> {
-		const file = await this.getStorageFile();
-		const lastRecord = [...file].reverse()[0];
-		await this.removeRecord(lastRecord.id);
-		return lastRecord.url;
-	}
 }

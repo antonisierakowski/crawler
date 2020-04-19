@@ -1,4 +1,4 @@
-import './envConfig';
+import './configs/envConfig';
 import { WebCrawler } from './services/Crawler';
 import container from './dependenciesContainer/container';
 import { TYPES } from './dependenciesContainer/types';

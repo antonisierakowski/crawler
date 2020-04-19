@@ -1,25 +1,78 @@
 import { injectable } from 'inversify';
 import { StoredWebsiteModel, WebsiteRepository } from '../interfaces/WebsiteRepository';
 import { AnalysedWebsite } from '../models/AnalysedWebsite';
+import pool from '../configs/db';
+import { QueryResult } from 'pg';
 
 @injectable()
 export class PostgresRepository implements WebsiteRepository {
 	async save(website: AnalysedWebsite): Promise<string> {
-		return null;
+		console.log(`Saving website... ${website.url}`);
+		const query = `
+			INSERT INTO websites.websites (title, url, description) VALUES ($1, $2, $3) RETURNING id
+		`;
+		try {
+			const queryResult: QueryResult<StoredWebsiteModel> = await pool.query(
+				query,
+				[website.title, website.url, website.description],
+			);
+			return queryResult.rows[0].id;
+		}
+		catch(e) {
+			console.log(e);
+			console.log('There was an error saving the record.');
+		}
 	}
+
 	async getById(id: string): Promise<StoredWebsiteModel> {
-		return null;
+		const start = Date.now();
+		const query = `
+			SELECT * FROM websites.websites WHERE id IN ($1)
+		`;
+		try {
+			const queryResult: QueryResult<StoredWebsiteModel> = await pool.query(
+				query,
+				[id],
+			);
+			console.log(`Found a record by ID. Took ${Date.now() - start}ms.`);
+			return queryResult.rows[0];
+		} catch(e) {
+			console.log('getById error');
+			console.log(e);
+		}
 	}
 
 	async isUrlStored(url: string): Promise<boolean> {
-		return null;
-	}
+		const start = Date.now();
+		const query = `
+			SELECT * FROM websites.websites WHERE url IN ($1)
+		`; // todo: stop search once single record is found
+		try {
+			const queryResult: QueryResult<StoredWebsiteModel> = await pool.query(
+				query,
+				[url],
+			);
+			console.log(`isUrlStored complete. Took ${Date.now() - start}ms.`);
 
-	async getAndRemoveLastSavedUrl(): Promise<string> {
-		return null;
+			return Boolean(queryResult.rows.length);
+		} catch(e) {
+			console.log('isUrlStored error');
+			console.log(e);
+		}
 	}
 
 	async removeRecord(id: string): Promise<void> {
-		return null;
+		const query = `
+			DELETE * FROM websites.websites WHERE id IN ($1)
+		`;
+		try {
+			await pool.query(
+				query,
+				[id],
+			);
+		} catch(e) {
+			console.log('removeRecord error');
+			console.log(e);
+		}
 	}
 }

@@ -31,13 +31,7 @@ export class Crawler implements WebCrawler {
 				}
 			}
 		}
-		this.reinitializeCrawler();
-	}
-
-	private async reinitializeCrawler(): Promise<void> {
-		console.log('Reinitializing crawler from the last saved record...');
-		const lastRecord = await this.repository.getAndRemoveLastSavedUrl();
-		this.initialize(lastRecord);
+		console.log('Looks like we\'re out of URLs. Try changing the initial URL and rerun.');
 	}
 
 	private async crawlWebsite(url: string): Promise<void> {
