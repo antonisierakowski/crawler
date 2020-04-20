@@ -1,9 +1,10 @@
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../dependenciesContainer/types';
-import { WebsiteRepository } from '../interfaces/WebsiteRepository';
+import { WebsiteRepositoryInterface } from '../interfaces/WebsiteRepositoryInterface';
 import { MarkupTraverser } from '../interfaces/MarkupTraverser';
-import { DBClient } from '../interfaces/DBClient';
 import { ExitHandlerInterface } from '../interfaces/ExitHandlerInterface';
+import { LoggerInterface } from '../interfaces/Logger';
+import { registerExitProcessCallbacks } from '../helpers/registerExitProcessCallbacks';
 
 export interface WebCrawler {
 	initialize(url: string): void;
@@ -14,18 +15,17 @@ export class Crawler implements WebCrawler {
 	private queue: Set<string> = new Set();
 
 	constructor(
-		@inject(TYPES.WebsiteRepository) private repository: WebsiteRepository,
+		@inject(TYPES.WebsiteRepository) private repository: WebsiteRepositoryInterface,
 		@inject(TYPES.MarkupTraverser) private traverser: MarkupTraverser,
 		@inject(TYPES.ExitHandlerInterface) private exitHandler: ExitHandlerInterface,
+		@inject(TYPES.LoggerInterface) private logger: LoggerInterface,
 	) {
-		process.on('exit', () => {
-			this.exitHandler.handleExit();
-		});
+		registerExitProcessCallbacks(this.exitHandler.handleExit);
 	}
 
 	public async initialize(initialUrl: string): Promise<void> {
 		this.queue.add(initialUrl);
-		console.log('Started crawling...');
+		this.logger.msg('Started crawling...');
 		while(this.queue.size) {
 			const currentUrl = Array.from(this.queue)[0];
 			if (await this.repository.isUrlStored(currentUrl)) {
@@ -38,7 +38,7 @@ export class Crawler implements WebCrawler {
 				}
 			}
 		}
-		console.log('Looks like we\'re out of URLs. Try changing the initial URL and rerun.');
+		this.logger.msg('Looks like we\'re out of URLs. Try changing the initial URL and rerun.');
 	}
 
 	private async crawlWebsite(url: string): Promise<void> {

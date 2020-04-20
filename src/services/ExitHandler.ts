@@ -2,25 +2,28 @@ import { ExitHandlerInterface } from '../interfaces/ExitHandlerInterface';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../dependenciesContainer/types';
 import { DBClient } from '../interfaces/DBClient';
-import { WebsiteRepository } from '../interfaces/WebsiteRepository';
-import * as readline from 'readline-sync';
+import { WebsiteRepositoryInterface } from '../interfaces/WebsiteRepositoryInterface';
+import { LoggerInterface } from '../interfaces/Logger';
 
 @injectable()
 export class ExitHandler implements ExitHandlerInterface {
 	constructor(
 		@inject(TYPES.DBClient) private dbClient: DBClient,
-		@inject(TYPES.WebsiteRepository) private repository: WebsiteRepository,
-	) { }
+		@inject(TYPES.WebsiteRepository) private repository: WebsiteRepositoryInterface,
+		@inject(TYPES.LoggerInterface) private logger: LoggerInterface,
+	) {
+		this.handleExit = this.handleExit.bind(this);
+	}
 
 	async handleExit(): Promise<void> {
-		const shouldSave = await readline.question('Do you want to save the crawled websites in a database? It will clear locally saved file. Y/N: ');
-		if (shouldSave.toLowerCase() === 'y') {
+		const shouldSave = await this.logger.getYesOrNo('Do you want to save the crawled websites in a database? It will clear locally saved file. Y/N: ');
+		if (shouldSave) {
 			await this.saveAndClear();
 		}
-		console.log('Terminating process.');
+		this.logger.msg('Terminating process.');
 	}
 
 	private async saveAndClear() {
-		await this.repository.removeStorageFile();
+		await this.repository.removeStorageFile(); // this.repository.collectQueueAndClearStorage
 	}
 }

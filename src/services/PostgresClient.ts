@@ -1,5 +1,5 @@
 import { injectable } from 'inversify';
-import { StoredWebsiteModel, WebsiteRepository } from '../interfaces/WebsiteRepository';
+import { StoredWebsiteModel, WebsiteRepositoryInterface } from '../interfaces/WebsiteRepositoryInterface';
 import { AnalysedWebsite } from '../models/AnalysedWebsite';
 import pool from '../configs/db';
 import { QueryResult } from 'pg';
@@ -7,6 +7,12 @@ import { DBClient } from '../interfaces/DBClient';
 
 @injectable()
 export class PostgresClient implements DBClient {
+	updateAllData(data: StoredWebsiteModel[]): Promise<boolean> {
+		const query = `
+			INSERT INTO websites.websites (title, url, description) VALUES ($1, $2, $3) RETURNING id
+		`;
+		return Promise.resolve(true);
+	}
 	// async save(website: AnalysedWebsite): Promise<string> {
 	// 	console.log(`Saving website... ${website.url}`);
 	// 	const query = `

@@ -12,7 +12,8 @@ CREATE TABLE websites.websites (
     title TEXT NOT NULL,
     url TEXT unique NOT NULL,
     description TEXT,
-    created_at TIMESTAMP DEFAULT now()
+    created_at TIMESTAMP DEFAULT now(),
+    updated_at TIMESTAMP default now()
 );
 ```
 Once that is done, just edit adequate keys in `.env` file and run the crawler with `yarn prod`.

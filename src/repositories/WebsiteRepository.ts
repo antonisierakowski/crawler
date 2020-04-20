@@ -1,15 +1,21 @@
 import { AnalysedWebsite } from '../models/AnalysedWebsite';
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
 import * as fs from 'fs';
 import uuid from 'uuid';
 import { writeFileSyncRecursive } from '../helpers/writeFileRecursive';
-import { StoredWebsiteModel, WebsiteRepository } from '../interfaces/WebsiteRepository';
+import { StoredWebsiteModel, WebsiteRepositoryInterface } from '../interfaces/WebsiteRepositoryInterface';
+import { TYPES } from '../dependenciesContainer/types';
+import { LoggerInterface } from '../interfaces/Logger';
 
 @injectable()
-export class LocalJSONStorage implements WebsiteRepository {
+export class WebsiteRepository implements WebsiteRepositoryInterface {
 	private path = `./_records/${process.env.RESULT_FILE_NAME}`;
 
-	private async getStorageFile(): Promise<StoredWebsiteModel[]> {
+	constructor(
+		@inject(TYPES.LoggerInterface) private logger: LoggerInterface,
+	) {}
+
+	public async getStorageFile(): Promise<StoredWebsiteModel[]> {
 		try {
 			return JSON.parse(
 				fs.readFileSync(this.path, 'utf8'),
@@ -31,9 +37,9 @@ export class LocalJSONStorage implements WebsiteRepository {
 				id,
 			},
 		];
-		console.log(`Saving website... ${newWebsite.url}`);
+		this.logger.msg(`Saving website... ${newWebsite.url}`);
 		await writeFileSyncRecursive(this.path, JSON.stringify(newFile), 'utf-8');
-		console.log('Website saved!');
+		this.logger.msg('Website saved!');
 		return id;
 	}
 
@@ -61,6 +67,6 @@ export class LocalJSONStorage implements WebsiteRepository {
 
 	async removeStorageFile(): Promise<void> {
 		await fs.unlinkSync(this.path);
-		console.log('Storage file removed succesfuly.');
+		this.logger.msg('Storage file removed succesfuly.');
 	}
 }

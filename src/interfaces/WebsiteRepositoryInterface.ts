@@ -5,13 +5,13 @@ export interface StoredWebsiteModel {
     url: string;
     id: string;
     description: string;
-    created_at?: string,
 }
 
-export interface WebsiteRepository {
+export interface WebsiteRepositoryInterface {
     save(website: AnalysedWebsite): Promise<string>;
     getById(id: string): Promise<StoredWebsiteModel>;
     isUrlStored(url: string): Promise<boolean>;
     removeRecord(id: string): Promise<void>;
-    removeStorageFile(): Promise<void>
+    removeStorageFile(): Promise<void>;
+    getStorageFile(): Promise<StoredWebsiteModel[]>;
 }
