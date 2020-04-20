@@ -1,7 +1,5 @@
 export function registerExitProcessCallbacks(callback: () => void): void {
 	process.on('exit', callback);
-	// process.on('SIGINT', callback);
-	// process.on('beforeExit', callback);
 
 	process.on('uncaughtException', (e) => {
 		console.log('Uncaught Exception...');

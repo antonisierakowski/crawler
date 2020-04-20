@@ -4,6 +4,7 @@ import { TYPES } from '../dependenciesContainer/types';
 import { DBClient } from '../interfaces/DBClient';
 import { WebsiteRepositoryInterface } from '../interfaces/WebsiteRepositoryInterface';
 import { LoggerInterface } from '../interfaces/Logger';
+import { QueueRepositoryInterface } from '../interfaces/QueueRepositoryInterface';
 
 @injectable()
 export class ExitHandler implements ExitHandlerInterface {
@@ -11,6 +12,7 @@ export class ExitHandler implements ExitHandlerInterface {
 		@inject(TYPES.DBClient) private dbClient: DBClient,
 		@inject(TYPES.WebsiteRepository) private repository: WebsiteRepositoryInterface,
 		@inject(TYPES.LoggerInterface) private logger: LoggerInterface,
+		@inject(TYPES.QueueRepositoryInterface) private queueRepository: QueueRepositoryInterface,
 	) {
 		this.handleExit = this.handleExit.bind(this);
 	}
@@ -23,7 +25,7 @@ export class ExitHandler implements ExitHandlerInterface {
 		this.logger.msg('Terminating process.');
 	}
 
-	private async saveAndClear() {
+	private async saveInDbAndClear() {
 		await this.repository.removeStorageFile(); // this.repository.collectQueueAndClearStorage
 	}
 }

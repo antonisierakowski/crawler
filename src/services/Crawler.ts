@@ -5,6 +5,8 @@ import { MarkupTraverser } from '../interfaces/MarkupTraverser';
 import { ExitHandlerInterface } from '../interfaces/ExitHandlerInterface';
 import { LoggerInterface } from '../interfaces/Logger';
 import { registerExitProcessCallbacks } from '../helpers/registerExitProcessCallbacks';
+import { QueueRepositoryInterface } from '../interfaces/QueueRepositoryInterface';
+import { QueueModel } from '../models/Queue';
 
 export interface WebCrawler {
 	initialize(url: string): void;
@@ -19,11 +21,16 @@ export class Crawler implements WebCrawler {
 		@inject(TYPES.MarkupTraverser) private traverser: MarkupTraverser,
 		@inject(TYPES.ExitHandlerInterface) private exitHandler: ExitHandlerInterface,
 		@inject(TYPES.LoggerInterface) private logger: LoggerInterface,
+		@inject(TYPES.QueueRepositoryInterface) private queueRepository: QueueRepositoryInterface,
 	) {
 		registerExitProcessCallbacks(this.exitHandler.handleExit);
 	}
 
 	public async initialize(initialUrl: string): Promise<void> {
+		const preloadedQueue = await this.queueRepository.loadQueue();
+		if (preloadedQueue) {
+			this.preloadWithQueue(preloadedQueue);
+		}
 		this.queue.add(initialUrl);
 		this.logger.msg('Started crawling...');
 		while(this.queue.size) {
@@ -49,5 +56,9 @@ export class Crawler implements WebCrawler {
 
 	private removeFromQueue(url: string): void {
 		this.queue.delete(url);
+	}
+
+	private preloadWithQueue(preloadedQueue: QueueModel): void {
+		preloadedQueue.urls.forEach(queueRecord => this.queue.add(queueRecord));
 	}
 }

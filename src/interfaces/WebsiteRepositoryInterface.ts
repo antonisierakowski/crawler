@@ -1,17 +1,10 @@
-import { AnalysedWebsite } from '../models/AnalysedWebsite';
-
-export interface StoredWebsiteModel {
-    title: string;
-    url: string;
-    id: string;
-    description: string;
-}
+import { AnalysedWebsite, StoredWebsiteModel } from '../models/AnalysedWebsite';
 
 export interface WebsiteRepositoryInterface {
     save(website: AnalysedWebsite): Promise<string>;
     getById(id: string): Promise<StoredWebsiteModel>;
     isUrlStored(url: string): Promise<boolean>;
     removeRecord(id: string): Promise<void>;
-    removeStorageFile(): Promise<void>;
+    removeStorageFile(): Promise<boolean>;
     getStorageFile(): Promise<StoredWebsiteModel[]>;
 }
