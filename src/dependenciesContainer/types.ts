@@ -8,4 +8,5 @@ export const TYPES = {
 	ExitHandlerInterface: Symbol('ExitHandlerInterface'),
 	LoggerInterface: Symbol('LoggerInterface'),
 	PersistenceClient: Symbol('PersistenceClient'),
+	UrlQueueInterface: Symbol('UrlQueueInterface'),
 };

@@ -1,29 +1,31 @@
-import { LoggerInterface } from '../interfaces/Logger';
+import { LoggerInterface } from '../interfaces/LoggerInterface';
 import { injectable } from 'inversify';
-import readline from 'readline-sync';
+import * as rl from 'readline';
 
 @injectable()
 export class Logger implements LoggerInterface {
-	// private rl: readline.Interface;
+	readline: rl.Interface;
+	err = this.msg;
+	warn = this.msg;
 
 	constructor(
 		// todo: inject logger repository
 	) {
-		// this.rl = readline.createInterface({
-		// 	input: process.stdin,
-		// 	output: process.stdout,
-		// });
+		this.readline = rl.createInterface({
+			input: process.stdin,
+			output: process.stdout,
+		});
 	}
 
 	msg(msg: string) {
-		// this.rl.write(`${content}\n`);
 		console.log(msg);
 	}
 
 	async getYesOrNo(question: string): Promise<boolean> {
 		let response = null;
+
 		while (response !== false && response !== true) {
-			const input = await readline.question(question);
+			const input = await this.query(`${question}  Y/N: `);
 			switch (input.toLowerCase()) {
 			case 'y': {
 				response = true;
@@ -40,6 +42,12 @@ export class Logger implements LoggerInterface {
 			}
 		}
 		return response;
-		// return Promise.resolve(true);
+	}
+
+	private async query(msg: string): Promise<string> {
+		return new Promise(resolve => this.readline.question(msg, (answer) => {
+			this.readline.close();
+			resolve(answer);
+		}));
 	}
 }

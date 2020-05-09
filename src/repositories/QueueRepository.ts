@@ -2,7 +2,7 @@ import { QueueRepositoryInterface } from '../interfaces/QueueRepositoryInterface
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../dependenciesContainer/types';
 import { PersistenceClient, StorageRecord } from '../interfaces/PersistenceClient';
-import { LoggerInterface } from '../interfaces/Logger';
+import { LoggerInterface } from '../interfaces/LoggerInterface';
 import { QueueModel } from '../models/Queue';
 
 export interface StoredQueue extends QueueModel, StorageRecord { }
@@ -30,7 +30,7 @@ export class QueueRepository implements QueueRepositoryInterface {
 	async loadQueue(): Promise<QueueModel> {
 		const queue = await this.client.getAllRecords<StoredQueue>(this.path);
 
-		if (queue) {
+		if (queue.length) {
 			await this.client.removeStorageFile(this.path);
 			return queue[0];
 		}

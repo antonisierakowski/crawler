@@ -7,4 +7,5 @@ export interface WebsiteRepositoryInterface {
     removeRecord(id: string): Promise<void>;
     removeStorageFile(): Promise<boolean>;
     getStorageFile(): Promise<StoredWebsiteModel[]>;
+    updateDB(collectedData: StoredWebsiteModel[]): Promise<boolean>
 }

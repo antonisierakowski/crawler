@@ -2,7 +2,9 @@ import { PersistenceClient, StorageRecord } from '../interfaces/PersistenceClien
 import fs from 'fs';
 import uuid from 'uuid';
 import path from 'path';
+import { injectable } from 'inversify';
 
+@injectable()
 export class LocalJSONStorageClient implements PersistenceClient {
 	async saveRecord<T, R extends StorageRecord>(path: string, record: T): Promise<string> {
 		const allRecords = await this.getAllRecords<R>(path);
@@ -53,10 +55,12 @@ export class LocalJSONStorageClient implements PersistenceClient {
 
 	async removeStorageFile(path: string): Promise<boolean> {
 		try {
-			await fs.unlinkSync(path);
+			const doesFileExist = fs.readFileSync(path, 'utf8');
+			if (doesFileExist) {
+				await fs.unlinkSync(path);
+			}
 			return true;
 		} catch(error) {
-			console.log(error);
 			return false;
 		}
 	}

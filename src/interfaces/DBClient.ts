@@ -1,5 +1,4 @@
-import { StoredWebsiteModel } from './WebsiteRepositoryInterface';
-
 export interface DBClient {
-	updateAllData(data: StoredWebsiteModel[]): Promise<boolean>
+	connect(): Promise<void>;
+	disconnect(): Promise<void>;
 }

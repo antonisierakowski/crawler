@@ -1,4 +1,5 @@
 import './configs/envConfig';
+import 'reflect-metadata';
 import { WebCrawler } from './services/Crawler';
 import container from './dependenciesContainer/container';
 import { TYPES } from './dependenciesContainer/types';

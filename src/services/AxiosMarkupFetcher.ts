@@ -6,7 +6,7 @@ import { MarkupFetcher } from '../interfaces/MarkupFetcher';
 export class AxiosMarkupFetcher implements MarkupFetcher {
 	async getMarkup(url: string): Promise<string> {
 		try {
-			const response: AxiosResponse = await axios.get(url);
+			const response: AxiosResponse = await axios.get<string>(url);
 			return response.data;
 		} catch (e) {
 			throw new Error(e);

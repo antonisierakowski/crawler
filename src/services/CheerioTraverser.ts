@@ -8,7 +8,7 @@ import { MarkupFetcher } from '../interfaces/MarkupFetcher';
 @injectable()
 export class CheerioTraverser implements MarkupTraverser {
 	constructor(
-      @inject(TYPES.MarkupFetcher) private fetcher: MarkupFetcher,
+		@inject(TYPES.MarkupFetcher) private fetcher: MarkupFetcher,
 	) { }
 
 	async analyseWebsite(url: string): Promise<AnalysedWebsite> {

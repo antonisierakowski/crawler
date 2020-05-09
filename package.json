@@ -9,12 +9,14 @@
     "prod": "yarn build && yarn start",
     "build": "yarn check-code && tsc",
     "check-code": "eslint \"./src/**/*.ts\"",
-    "fix-code": "eslint \"./src/**/*.ts\" --fix"
+    "fix-code": "eslint \"./src/**/*.ts\" --fix",
+    "clear": "rm -rf _records/*"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@types/cheerio": "^0.22.16",
+    "@types/mongoose": "^5.7.16",
     "@types/pg": "^7.14.3",
     "@types/readline-sync": "^1.4.3",
     "@types/uuid": "^3.4.7",
@@ -24,9 +26,9 @@
     "cheerio": "^1.0.0-rc.3",
     "dotenv": "^8.2.0",
     "inversify": "^5.0.1",
+    "mongoose": "^5.9.10",
     "nodemon": "^2.0.3",
     "pg": "^8.0.2",
-    "readline-sync": "^1.4.10",
     "reflect-metadata": "^0.1.13",
     "ts-node": "^8.6.2",
     "typescript": "^3.8.2",

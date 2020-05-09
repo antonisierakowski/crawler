@@ -1,4 +1,6 @@
 export interface LoggerInterface {
-	msg(content: string): void;
-	getYesOrNo(question: string): Promise<boolean>;
+	msg(msg: string): void;
+	err(msg: string): void;
+	warn(msg: string): void;
+	getYesOrNo(query: string): Promise<boolean>;
 }
