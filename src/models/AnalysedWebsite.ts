@@ -1,13 +1,9 @@
-import { StorageRecord } from '../interfaces/PersistenceClient';
-
-export interface WebsiteToStore {
+export interface Website {
   title: string;
   url: string;
-  description: string;
+  description?: string;
 }
 
-export interface AnalysedWebsite extends WebsiteToStore {
+export interface AnalysedWebsite extends Website {
   anchors: string[];
 }
-
-export interface StoredWebsiteModel extends WebsiteToStore, StorageRecord {}

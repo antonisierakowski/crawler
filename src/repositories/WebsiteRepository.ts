@@ -1,4 +1,4 @@
-import { AnalysedWebsite, StoredWebsiteModel, WebsiteToStore } from '../models/AnalysedWebsite';
+import { AnalysedWebsite, Website } from '../models/AnalysedWebsite';
 import { inject, injectable } from 'inversify';
 import { WebsiteRepositoryInterface } from '../interfaces/WebsiteRepositoryInterface';
 import { TYPES } from '../dependenciesContainer/types';
@@ -17,28 +17,23 @@ export class WebsiteRepository implements WebsiteRepositoryInterface {
 		@inject(TYPES.DBClient) private db: DBClient,
 	) {}
 
-	public async getStorageFile(): Promise<StoredWebsiteModel[]> {
-		return this.client.getAllRecords<StoredWebsiteModel>(this.path);
+	public async getStorageFile(): Promise<Website[]> {
+		return this.client.getAllRecords<Website>(this.path);
 	}
 
-	async save(newWebsite: AnalysedWebsite): Promise<string> {
+	async save(newWebsite: AnalysedWebsite): Promise<void> {
 		this.logger.msg(`Saving website... ${newWebsite.url}`);
-		const id = await this.client.saveRecord<WebsiteToStore, StoredWebsiteModel>(this.path, {
+		await this.client.saveRecord<Website>(this.path, {
 			title: newWebsite.title,
 			url: newWebsite.url,
 			description: newWebsite.description,
 		});
 		this.logger.msg('Website saved!');
-		return id;
-	}
-
-	async getById(id: string): Promise<StoredWebsiteModel> {
-		return this.client.getRecordById<StoredWebsiteModel>(this.path, id);
 	}
 
 	async isUrlStored(url: string): Promise<boolean> {
 		const website =
-			await this.client.getRecordByKeyName<StoredWebsiteModel>(
+			await this.client.getRecordByKeyName<Website>(
 				this.path,
 				'url',
 				url,
@@ -47,10 +42,6 @@ export class WebsiteRepository implements WebsiteRepositoryInterface {
 			return true;
 		}
 		return false;
-	}
-
-	async removeRecord(id: string): Promise<void> {
-		await this.client.removeRecordById(this.path, id);
 	}
 
 	async removeStorageFile(): Promise<boolean> {
@@ -63,7 +54,7 @@ export class WebsiteRepository implements WebsiteRepositoryInterface {
 		return removalResult;
 	}
 
-	async updateDB(collectedData: StoredWebsiteModel[]): Promise<boolean> {
+	async updateDB(collectedData: Website[]): Promise<boolean> {
 		try {
 			for (const record of collectedData) {
 				await new analyzedWebsiteModel(record).save();

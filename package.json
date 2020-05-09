@@ -10,7 +10,8 @@
     "build": "yarn check-code && tsc",
     "check-code": "eslint \"./src/**/*.ts\"",
     "fix-code": "eslint \"./src/**/*.ts\" --fix",
-    "clear": "rm -rf _records/*"
+    "clear": "rm -rf _records/*",
+    "test-db": "export DB_TEST=1; yarn prod"
   },
   "author": "",
   "license": "ISC",
@@ -31,8 +32,7 @@
     "pg": "^8.0.2",
     "reflect-metadata": "^0.1.13",
     "ts-node": "^8.6.2",
-    "typescript": "^3.8.2",
-    "uuid": "^3.4.0"
+    "typescript": "^3.8.2"
   },
   "devDependencies": {
     "@types/node": "^13.7.4",

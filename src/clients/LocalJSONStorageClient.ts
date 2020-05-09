@@ -1,27 +1,19 @@
-import { PersistenceClient, StorageRecord } from '../interfaces/PersistenceClient';
+import { PersistenceClient } from '../interfaces/PersistenceClient';
 import fs from 'fs';
-import uuid from 'uuid';
 import path from 'path';
 import { injectable } from 'inversify';
 
 @injectable()
 export class LocalJSONStorageClient implements PersistenceClient {
-	async saveRecord<T, R extends StorageRecord>(path: string, record: T): Promise<string> {
-		const allRecords = await this.getAllRecords<R>(path);
-		const id = uuid.v4();
+	async saveRecord<T>(path: string, record: T): Promise<void> {
+		const allRecords = await this.getAllRecords<T>(path);
 		const newFile = [
 			...allRecords, record,
 		];
 		await this.writeFile(path, JSON.stringify(newFile), 'utf-8');
-		return id;
 	}
 
-	async getRecordById<T extends StorageRecord>(path: string, id: string): Promise<T> {
-		const allRecords = await this.getAllRecords<T>(path);
-		return allRecords.find(record => record.id === id);
-	}
-
-	async getRecordByKeyName<T extends StorageRecord>(path: string, key: keyof T, value: T[keyof T]): Promise<T> {
+	async getRecordByKeyName<T>(path: string, key: keyof T, value: T[keyof T]): Promise<T> {
 		const allRecords = await this.getAllRecords<T>(path);
 		let recordToFind: T = null;
 		allRecords.forEach(record => {
@@ -32,18 +24,7 @@ export class LocalJSONStorageClient implements PersistenceClient {
 		return recordToFind;
 	}
 
-	async removeRecordById<T extends StorageRecord>(path: string, id: string): Promise<boolean> {
-		const allRecords = await this.getAllRecords<T>(path);
-		const fileAfterRemoval = allRecords.filter(record => record.id !== id);
-		try {
-			await this.writeFile(path, JSON.stringify(fileAfterRemoval),'utf-8');
-			return true;
-		} catch {
-			return false;
-		}
-	}
-
-	async getAllRecords<T extends StorageRecord>(path: string): Promise<T[]> {
+	async getAllRecords<T>(path: string): Promise<T[]> {
 		try {
 			return await JSON.parse(
 				fs.readFileSync(path, 'utf8'),
@@ -78,5 +59,4 @@ export class LocalJSONStorageClient implements PersistenceClient {
 		}
 		fs.writeFileSync(filename, content, charset);
 	}
-
 }

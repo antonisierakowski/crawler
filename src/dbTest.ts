@@ -1,20 +1,27 @@
 import './configs/envConfig';
 import 'reflect-metadata';
-import { StoredWebsiteModel } from './models/AnalysedWebsite';
+import { Website } from './models/AnalysedWebsite';
 import container from './dependenciesContainer/container';
 import { TYPES } from './dependenciesContainer/types';
 import { WebsiteRepositoryInterface } from './interfaces/WebsiteRepositoryInterface';
 
-const records: StoredWebsiteModel[] = [
+export async function dbTest() {
+	const records: Website[] = [
+		// {
+		// 	url: 'test',
+		//
+		// }, {
+		//
+		// }
+	];
 
-];
+	const repository = container.get<WebsiteRepositoryInterface>(TYPES.WebsiteRepository);
 
-const repository = container.get<WebsiteRepositoryInterface>(TYPES.WebsiteRepository);
+	try {
+		await repository.updateDB(records);
+		console.log('success');
+	} catch(e) {
+		console.log(e);
+	}
+}
 
-repository.updateDB(records)
-	.then(() => {
-		console.log('success.');
-	})
-	.catch(err => {
-		console.log(err);
-	});
