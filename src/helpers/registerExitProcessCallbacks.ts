@@ -1,10 +1,8 @@
-export function registerExitProcessCallbacks(callback: () => void): void {
-	process.on('exit', callback);
-
-	process.on('uncaughtException', (e) => {
-		console.log('Uncaught Exception...');
-		console.log(e.stack);
-		process.exit(99);
-	});
+export function registerExitProcessCallbacks(callbacks: (() => void)[]): void {
+	const exitCallback = () => {
+		callbacks.forEach(cb => cb());
+	};
+	process.on('SIGINT', exitCallback);
+	process.on('SIGTERM', exitCallback);
 }
 
