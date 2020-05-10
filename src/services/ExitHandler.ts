@@ -19,13 +19,11 @@ export class ExitHandler implements ExitHandlerInterface {
 
 	async handleExit(): Promise<void> {
 		await this.queue.collectAndSave();
-		await this.saveInDbAndClearStorage();
-		// const shouldSave = await this.logger.getYesOrNo('Do you want to save the crawled websites in a database? It will clear locally saved file.');
-		// this.logger.msg(`got some kind of answer? ${shouldSave}`); // delete
-		// if (shouldSave) {
-		// 	await this.saveInDbAndClearStorage();
-		// }
-		// this.logger.msg('Terminating process.');
+		const shouldSave = await this.logger.getYesOrNo('Do you want to save the crawled websites in a database? It will clear locally saved file.');
+		if (shouldSave) {
+			await this.saveInDbAndClearStorage();
+		}
+		this.logger.msg('Terminating process.');
 		process.exit();
 	}
 
@@ -35,11 +33,10 @@ export class ExitHandler implements ExitHandlerInterface {
 		this.logger.msg('Saving in DB...');
 		const collectedData = await this.repository.getStorageFile();
 		const success = await this.repository.updateDB(collectedData);
-		// console.log(`o co chodzi: ${success}`);
-		// if (success) {
-		// 	this.logger.msg('Succesfuly updated the database. Removing local storage file...');
-		// 	await this.repository.removeStorageFile();
-		// }
+		if (success) {
+			this.logger.msg('Succesfuly updated the database. Removing local storage file...');
+			await this.repository.removeStorageFile();
+		}
 		await this.dbClient.disconnect();
 	}
 }

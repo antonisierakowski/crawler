@@ -4,8 +4,8 @@ import { WebsiteRepositoryInterface } from '../interfaces/WebsiteRepositoryInter
 import { TYPES } from '../dependenciesContainer/types';
 import { LoggerInterface } from '../interfaces/LoggerInterface';
 import { PersistenceClient } from '../interfaces/PersistenceClient';
-import { DBClient } from '../interfaces/DBClient';
-import { analyzedWebsiteModel } from '../schemas/AnalyzedWebsite';
+import { AnalyzedWebsiteModel, AnalyzedWebsiteSchemaInterface } from '../schemas/AnalyzedWebsite';
+import { mongoErrorCodeDuplicateKeys } from '../clients/MongoClient';
 
 @injectable()
 export class WebsiteRepository implements WebsiteRepositoryInterface {
@@ -14,8 +14,7 @@ export class WebsiteRepository implements WebsiteRepositoryInterface {
 	constructor(
 		@inject(TYPES.PersistenceClient) private client: PersistenceClient,
 		@inject(TYPES.LoggerInterface) private logger: LoggerInterface,
-		@inject(TYPES.DBClient) private db: DBClient,
-	) {}
+	) { }
 
 	public async getStorageFile(): Promise<Website[]> {
 		return this.client.getAllRecords<Website>(this.path);
@@ -56,13 +55,31 @@ export class WebsiteRepository implements WebsiteRepositoryInterface {
 
 	async updateDB(collectedData: Website[]): Promise<boolean> {
 		try {
-			for (const record of collectedData) {
-				await new analyzedWebsiteModel(record).save();
+			for await (const record of collectedData) {
+				const model = new AnalyzedWebsiteModel(record);
+				try {
+					await model.save();
+				} catch (e) {
+					if (e.code === mongoErrorCodeDuplicateKeys) {
+						await this.updateDbRecord(model);
+					}
+				}
 			}
 			return true;
 		} catch(e) {
 			this.logger.err(e);
 			return false;
 		}
+	}
+
+	private async updateDbRecord(model: AnalyzedWebsiteSchemaInterface): Promise<void> {
+		await AnalyzedWebsiteModel.updateOne(
+			{ url: model.url },
+			{ $set: {
+				title: model.title,
+				description: model.description,
+				updated_at: Date.now().toString(),
+			}},
+		);
 	}
 }
