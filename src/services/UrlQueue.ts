@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 import { UrlQueueInterface } from '../interfaces/UrlQueueInterface';
 import { TYPES } from '../dependenciesContainer/types';
 import { QueueRepositoryInterface } from '../interfaces/QueueRepositoryInterface';
-import { LoggerInterface } from '../interfaces/LoggerInterface';
+import { Logger } from './Logger';
 
 @injectable()
 export class UrlQueue implements UrlQueueInterface {
@@ -10,7 +10,6 @@ export class UrlQueue implements UrlQueueInterface {
 
 	constructor(
 		@inject(TYPES.QueueRepositoryInterface) private queueRepository: QueueRepositoryInterface,
-		@inject(TYPES.LoggerInterface) private logger: LoggerInterface,
 	) { }
 
 	add(url: string): void {
@@ -32,9 +31,9 @@ export class UrlQueue implements UrlQueueInterface {
 	async preload(initial: string): Promise<void> {
 		const preloadedQueue = await this.queueRepository.loadQueue();
 		if (preloadedQueue) {
-			this.logger.msg('Found a file with a queue from a previous session. Loading...');
+			Logger.msg('Found a file with a queue from a previous session. Loading...');
 			preloadedQueue.urls.forEach(queueRecord => this.queue.add(queueRecord));
-			this.logger.msg('Queue loaded.');
+			Logger.msg('Queue loaded.');
 		}
 		this.queue.add(initial);
 	}

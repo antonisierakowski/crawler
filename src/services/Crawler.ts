@@ -3,9 +3,9 @@ import { TYPES } from '../dependenciesContainer/types';
 import { WebsiteRepositoryInterface } from '../interfaces/WebsiteRepositoryInterface';
 import { MarkupTraverser } from '../interfaces/MarkupTraverser';
 import { ExitHandlerInterface } from '../interfaces/ExitHandlerInterface';
-import { LoggerInterface } from '../interfaces/LoggerInterface';
 import { registerExitProcessCallbacks } from '../helpers/registerExitProcessCallbacks';
 import { UrlQueueInterface } from '../interfaces/UrlQueueInterface';
+import { Logger } from './Logger';
 
 export interface WebCrawler {
 	initialize(url: string): void;
@@ -20,7 +20,6 @@ export class Crawler implements WebCrawler {
 		@inject(TYPES.WebsiteRepository) private repository: WebsiteRepositoryInterface,
 		@inject(TYPES.MarkupTraverser) private traverser: MarkupTraverser,
 		@inject(TYPES.ExitHandlerInterface) private exitHandler: ExitHandlerInterface,
-		@inject(TYPES.LoggerInterface) private logger: LoggerInterface,
 		@inject(TYPES.UrlQueueInterface) private queue: UrlQueueInterface,
 	) {
 		this.stop = this.stop.bind(this);
@@ -31,7 +30,7 @@ export class Crawler implements WebCrawler {
 
 	public async initialize(initialUrl: string): Promise<void> {
 		await this.queue.preload(initialUrl);
-		this.logger.msg('Started crawling...');
+		Logger.msg('Started crawling...');
 		while(this.queue.size && this.shouldRun) {
 			const currentUrl = this.queue.current;
 			if (await this.repository.isUrlStored(currentUrl)) {
@@ -45,7 +44,7 @@ export class Crawler implements WebCrawler {
 			}
 		}
 		if (this.queue.size === 0) {
-			this.logger.warn('Looks like we\'re out of URLs. Try changing the initial URL and rerun.');
+			Logger.warn('Looks like we\'re out of URLs. Try changing the initial URL and rerun.');
 		}
 		await this.exitHandler.handleExit();
 	}

@@ -6,7 +6,6 @@ export const TYPES = {
 	MarkupTraverser: Symbol('MarkupTraverser'),
 	DBClient: Symbol('DBClient'),
 	ExitHandlerInterface: Symbol('ExitHandlerInterface'),
-	LoggerInterface: Symbol('LoggerInterface'),
 	PersistenceClient: Symbol('PersistenceClient'),
 	UrlQueueInterface: Symbol('UrlQueueInterface'),
 };

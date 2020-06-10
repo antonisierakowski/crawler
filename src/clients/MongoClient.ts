@@ -1,7 +1,5 @@
 import { inject, injectable } from 'inversify';
 import { DBClient } from '../interfaces/DBClient';
-import { TYPES } from '../dependenciesContainer/types';
-import { LoggerInterface } from '../interfaces/LoggerInterface';
 import { getConnectionString } from '../helpers/getConnectionString';
 import mongoose from 'mongoose';
 import { dbModels } from '../schemas/models';
@@ -11,10 +9,6 @@ export const mongoErrorCodeDuplicateKeys = 11000;
 @injectable()
 export class MongoClient implements DBClient {
 	private models: mongoose.Model<any>[] = dbModels;
-
-	constructor(
-		@inject(TYPES.LoggerInterface) private logger: LoggerInterface,
-	) { }
 
 	async connect(): Promise<void> {
 		await mongoose.connect(getConnectionString(), {

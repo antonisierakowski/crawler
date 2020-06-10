@@ -2,10 +2,10 @@ import { AnalysedWebsite, Website } from '../models/AnalysedWebsite';
 import { inject, injectable } from 'inversify';
 import { WebsiteRepositoryInterface } from '../interfaces/WebsiteRepositoryInterface';
 import { TYPES } from '../dependenciesContainer/types';
-import { LoggerInterface } from '../interfaces/LoggerInterface';
 import { PersistenceClient } from '../interfaces/PersistenceClient';
 import { AnalyzedWebsiteModel, AnalyzedWebsiteSchemaInterface } from '../schemas/AnalyzedWebsite';
 import { mongoErrorCodeDuplicateKeys } from '../clients/MongoClient';
+import { Logger } from '../services/Logger';
 
 @injectable()
 export class WebsiteRepository implements WebsiteRepositoryInterface {
@@ -13,7 +13,6 @@ export class WebsiteRepository implements WebsiteRepositoryInterface {
 
 	constructor(
 		@inject(TYPES.PersistenceClient) private client: PersistenceClient,
-		@inject(TYPES.LoggerInterface) private logger: LoggerInterface,
 	) { }
 
 	public async getStorageFile(): Promise<Website[]> {
@@ -21,13 +20,13 @@ export class WebsiteRepository implements WebsiteRepositoryInterface {
 	}
 
 	async save(newWebsite: AnalysedWebsite): Promise<void> {
-		this.logger.msg(`Saving website... ${newWebsite.url}`);
+		Logger.msg(`Saving website... ${newWebsite.url}`);
 		await this.client.saveRecord<Website>(this.path, {
 			title: newWebsite.title,
 			url: newWebsite.url,
 			description: newWebsite.description,
 		});
-		this.logger.msg('Website saved!');
+		Logger.msg('Website saved!');
 	}
 
 	async isUrlStored(url: string): Promise<boolean> {
@@ -46,9 +45,9 @@ export class WebsiteRepository implements WebsiteRepositoryInterface {
 	async removeStorageFile(): Promise<boolean> {
 		const removalResult = await this.client.removeStorageFile(this.path);
 		if (removalResult) {
-			this.logger.msg('Storage file removed succesfuly.');
+			Logger.msg('Storage file removed succesfuly.');
 		} else {
-			this.logger.err('There was an error removing the storage file.');
+			Logger.err('There was an error removing the storage file.');
 		}
 		return removalResult;
 	}
@@ -67,7 +66,7 @@ export class WebsiteRepository implements WebsiteRepositoryInterface {
 			}
 			return true;
 		} catch(e) {
-			this.logger.err(e);
+			Logger.err(e.message);
 			return false;
 		}
 	}

@@ -4,6 +4,7 @@ import { MarkupTraverser } from '../interfaces/MarkupTraverser';
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../dependenciesContainer/types';
 import { MarkupFetcher } from '../interfaces/MarkupFetcher';
+import { logExecution } from '../helpers/logExecution';
 
 @injectable()
 export class CheerioTraverser implements MarkupTraverser {

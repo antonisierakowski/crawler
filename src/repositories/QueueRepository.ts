@@ -2,13 +2,11 @@ import { QueueRepositoryInterface } from '../interfaces/QueueRepositoryInterface
 import { inject, injectable } from 'inversify';
 import { TYPES } from '../dependenciesContainer/types';
 import { PersistenceClient } from '../interfaces/PersistenceClient';
-import { LoggerInterface } from '../interfaces/LoggerInterface';
 import { QueueModel } from '../models/Queue';
 
 @injectable()
 export class QueueRepository implements QueueRepositoryInterface {
 	constructor(
-		@inject(TYPES.LoggerInterface) private logger: LoggerInterface,
 		@inject(TYPES.PersistenceClient) private client: PersistenceClient,
 	) { }
 
@@ -22,7 +20,6 @@ export class QueueRepository implements QueueRepositoryInterface {
 		} catch {
 			return false;
 		}
-
 	}
 
 	async loadQueue(): Promise<QueueModel> {
