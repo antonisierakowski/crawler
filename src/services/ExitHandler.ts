@@ -30,7 +30,7 @@ export class ExitHandler implements ExitHandlerInterface {
 		Logger.msg('Initializing DB connection...');
 		await this.dbClient.connect();
 		Logger.msg('Saving in DB...');
-		const collectedData = await this.repository.getStorageFile();
+		const collectedData = await this.repository.loadFromStorage();
 		const success = await this.repository.updateDB(collectedData);
 		if (success) {
 			Logger.msg('Succesfuly updated the database. Removing local storage file...');
