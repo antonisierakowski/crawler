@@ -29,19 +29,20 @@ export class UrlQueue implements UrlQueueInterface {
 	}
 
 	async preload(initial: string): Promise<void> {
-		const preloadedQueue = await this.queueRepository.loadQueue();
+		const preloadedQueue = await this.queueRepository.loadFromStorage();
 		if (preloadedQueue) {
 			Logger.msg('Found a file with a queue from a previous session. Loading...');
-			preloadedQueue.urls.forEach(queueRecord => this.queue.add(queueRecord));
+			preloadedQueue.forEach(queueRecord => this.queue.add(queueRecord.url));
 			Logger.msg('Queue loaded.');
 		}
 		this.queue.add(initial);
 	}
 
 	async collectAndSave(): Promise<boolean> {
-		const wasSaveSuccessful = await this.queueRepository.saveQueue({
-			urls: Array.from(this.queue),
-		});
+		const queueModel = Array
+			.from(this.queue)
+			.map(queueEntry => ({ url: queueEntry }));
+		const wasSaveSuccessful = await this.queueRepository.saveQueue(queueModel);
 		return wasSaveSuccessful;
 	}
 }

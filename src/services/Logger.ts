@@ -6,6 +6,7 @@ enum MessageType {
 	ERR = 'Err',
 	WARN = 'Warn',
 	PROMPT = 'Prompt',
+	EXEC_LOG = 'Exec'
 }
 
 @injectable()
@@ -37,7 +38,7 @@ export class Logger {
 
 	static execLog(className: string, methodName: string, execTime: string) {
 		console.log(
-			`[${className}] -> [${methodName}] took ${execTime}ms.`,
+			`${this.getBaseString(MessageType.EXEC_LOG)}: ${className}.${methodName} took ${execTime}ms.`,
 		);
 	}
 

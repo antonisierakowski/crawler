@@ -4,6 +4,6 @@ export interface WebsiteRepositoryInterface {
     save(website: AnalysedWebsite): Promise<void>;
     isUrlStored(url: string): Promise<boolean>;
     removeStorageFile(): Promise<boolean>;
-    getStorageFile(): Promise<Website[]>;
-    updateDB(collectedData: Website[]): Promise<boolean>
+    updateDB(collectedData: Website[]): Promise<boolean>;
+    loadFromStorage(): Promise<Website[]>;
 }

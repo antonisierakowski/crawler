@@ -1,4 +1,4 @@
-import { inject, injectable } from 'inversify';
+import { injectable } from 'inversify';
 import { DBClient } from '../interfaces/DBClient';
 import { getConnectionString } from '../helpers/getConnectionString';
 import mongoose from 'mongoose';

@@ -1,3 +1,3 @@
 export interface QueueModel {
-	urls: string[];
+	url: string;
 }

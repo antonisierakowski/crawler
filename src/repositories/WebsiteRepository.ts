@@ -1,23 +1,18 @@
 import { AnalysedWebsite, Website } from '../models/AnalysedWebsite';
-import { inject, injectable } from 'inversify';
+import { injectable } from 'inversify';
 import { WebsiteRepositoryInterface } from '../interfaces/WebsiteRepositoryInterface';
-import { TYPES } from '../dependenciesContainer/types';
-import { PersistenceClient } from '../interfaces/PersistenceClient';
 import { AnalyzedWebsiteModel, AnalyzedWebsiteSchemaInterface } from '../schemas/AnalyzedWebsite';
 import { mongoErrorCodeDuplicateKeys } from '../clients/MongoClient';
 import { Logger } from '../services/Logger';
+import { AbstractLocalRepository } from './AbstractLocalRepository';
 
 @injectable()
-export class WebsiteRepository implements WebsiteRepositoryInterface {
-	private readonly path = './_records/analyzed.json';
+export class WebsiteRepository
+	extends AbstractLocalRepository<Website>
+	implements WebsiteRepositoryInterface {
 
-	constructor(
-		@inject(TYPES.PersistenceClient) private client: PersistenceClient,
-	) { }
-
-	public async getStorageFile(): Promise<Website[]> {
-		return this.client.getAllRecords<Website>(this.path);
-	}
+	protected readonly path = './_records/analyzed.json';
+	readonly resourceName = 'Website';
 
 	async save(newWebsite: AnalysedWebsite): Promise<void> {
 		Logger.msg(`Saving website... ${newWebsite.url}`);
@@ -40,16 +35,6 @@ export class WebsiteRepository implements WebsiteRepositoryInterface {
 			return true;
 		}
 		return false;
-	}
-
-	async removeStorageFile(): Promise<boolean> {
-		const removalResult = await this.client.removeStorageFile(this.path);
-		if (removalResult) {
-			Logger.msg('Storage file removed succesfuly.');
-		} else {
-			Logger.err('There was an error removing the storage file.');
-		}
-		return removalResult;
 	}
 
 	async updateDB(collectedData: Website[]): Promise<boolean> {
